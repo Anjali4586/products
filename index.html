@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Store Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+        .product {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+        }
+        .product-title {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .product-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #007bff;
+            margin-top: 5px;
+        }
+        .product-details {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fake Store Products</h1>
+        <div class="product-grid" id="product-grid"></div>
+    </div>
+
+    <div class="container">
+        <div class="product-details" id="product-details"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const productGrid = document.getElementById('product-grid');
+            const productDetails = document.getElementById('product-details');
+
+            // Fetch products from the API
+            fetch('https://fakestoreapi.com/products')
+                .then(response => response.json())
+                .then(products => {
+                    products.forEach(product => {
+                        const productElement = document.createElement('div');
+                        productElement.classList.add('product');
+                        productElement.innerHTML = `
+                            <img src="${product.image}" alt="${product.title}">
+                            <h2 class="product-title">${product.title}</h2>
+                            <p class="product-price">$${product.price}</p>
+                        `;
+                        productElement.addEventListener('click', function() {
+                            showProductDetails(product);
+                        });
+                        productGrid.appendChild(productElement);
+                    });
+                })
+                .catch(error => console.error('Error fetching products:', error));
+
+            // Function to display product details
+            function showProductDetails(product) {
+                productDetails.innerHTML = `
+                    <h2>${product.title}</h2>
+                    <img src="${product.image}" alt="${product.title}">
+                    <p><strong>Price:</strong> $${product.price}</p>
+                    <p><strong>Description:</strong> ${product.description}</p>
+                    <p><strong>Category:</strong> ${product.category}</p>
+                `;
+                productDetails.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
